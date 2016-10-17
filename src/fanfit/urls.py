@@ -21,9 +21,13 @@ from rest_framework.authtoken import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/users/', include("accounts.api.urls", namespace='users-api')),
+    url(r'^api/competition/', include("clubadmin.api.urls", namespace='competition-api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 
 urlpatterns += [
     url(r'^api-token-auth/', views.obtain_auth_token)
 ]
+
+admin.site.site_header = 'Fan Fit Admin'
+admin.site.site_title = 'Fan Fit Admin'

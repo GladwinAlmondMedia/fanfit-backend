@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
@@ -32,10 +33,16 @@ class Activity(models.Model):
 		return self.title
 
 class Workout(models.Model):
-	time = models.IntegerField()
-	distance = models.DecimalField(max_digits=5, decimal_places=2)
-	average_speed = models.DecimalField(max_digits=5, decimal_places=2)
-	calories_burnt = models.DecimalField(max_digits=5, decimal_places=2)
+	user = models.ForeignKey(User, related_name='workout_user')
+	activity = models.ForeignKey(Activity)
+	points_tally = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
+	total_time = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
+	total_distance = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
+	average_speed = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
+	total_calories_burnt = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
 
 	def __str__(self):
-		return self.title
+		user = self.user
+		activity = self.activity
+		return "%s - %s" %(user, activity)
+

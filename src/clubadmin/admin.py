@@ -23,7 +23,7 @@ class CompetitionAdmin(admin.ModelAdmin):
 	# form = CompetitionAdminForm
 
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
-		if 'activity' in db_field.name:
+		if 'activity' in db_field.name and request.user.is_superuser==False:
 			current_user = request.user
 			profile_qs = UserProfile.objects.get(user=current_user)
 			kwargs["queryset"] = Activity.objects.filter(football_club=profile_qs.football_club)

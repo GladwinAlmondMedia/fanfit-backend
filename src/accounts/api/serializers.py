@@ -137,7 +137,6 @@ class UserProfileSerializer(ModelSerializer):
 
 	user = UserSerializer()
 	address = AddressSerializer()
-	# football_club = ClubSerializer()
 
 	class Meta:
 		model = UserProfile
@@ -157,7 +156,6 @@ class UserProfileSerializer(ModelSerializer):
 		birth_date = validated_data['birth_date']
 		weight = validated_data['weight']
 		photo = validated_data['photo']
-		points_tally = validated_data['points_tally']
 
 		profile_obj = UserProfile(
 					user = user_obj,
@@ -167,7 +165,6 @@ class UserProfileSerializer(ModelSerializer):
 					birth_date = birth_date,
 					weight = weight,
 					photo = photo,
-					points_tally = points_tally
 					)
 		profile_obj.save()
 		return validated_data
@@ -176,7 +173,7 @@ class UpdateUserProfileSerializer(ModelSerializer):
 	class Meta:
 		model = UserProfile
 
-		fields = ['weight', 'photo', 'points_tally', 'football_club', 'activity']
+		fields = ['weight', 'photo', 'football_club', 'activity', 'allowed_club_change']
 
 
 class UpdateUserSerializer(ModelSerializer):

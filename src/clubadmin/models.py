@@ -7,7 +7,7 @@ from competitions.models import FootballClub
 
 # Create your models here.
 class Competition(models.Model):
-	football_club = models.ForeignKey(FootballClub)
+	football_club = models.OneToOneField(FootballClub, related_name='competitions_football_club')
 
 	current_walking_activity = models.ForeignKey(
 		Activity, 

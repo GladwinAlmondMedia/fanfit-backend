@@ -24,28 +24,21 @@ class Address(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name='user')
-	# title = models.CharField(max_length=5)
-	# first_name = models.CharField(max_length=35)
-	# last_name = models.CharField(max_length=35)
-
 	football_club = models.ForeignKey(FootballClub, null=False, blank=False)
-
 	GENDERS = (("m", "Male",),("f", "Female"))
-
 	gender = models.CharField(max_length=10, choices=GENDERS)
-
 	birth_date = models.DateField()
 	weight = models.IntegerField()
 	address = models.OneToOneField(Address, on_delete=models.CASCADE)
 	photo = models.ImageField(upload_to=upload_location, null=True, blank=True)
 	activity = models.ForeignKey(Activity, null=True, blank=True)
-	points_tally = models.IntegerField(default=0)
+	allowed_club_change = models.BooleanField(default=True)
+	total_points = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
+
 
 	def __str__(self):
 		user = self.user
 		return "%ss Profile" %user
-
-
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
