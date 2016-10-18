@@ -39,7 +39,7 @@ class Workout(models.Model):
 	total_time = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
 	total_distance = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
 	average_speed = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
-	total_calories_burnt = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
+	total_calories_burned = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, blank=True, null=True)
 
 	def __str__(self):
 		user = self.user

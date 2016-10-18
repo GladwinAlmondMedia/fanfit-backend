@@ -4,7 +4,7 @@ from rest_framework.generics import RetrieveAPIView, ListAPIView, CreateAPIView
 from rest_framework.response import Response
 
 
-from .serializers import CompetitionSerializer, WorkoutSerializer
+from .serializers import CompetitionSerializer, WorkoutSerializer, FootballClubSerializer
 from clubadmin.models import Competition
 
 from competitions.models import FootballClub, Workout, Activity
@@ -16,7 +16,7 @@ User = get_user_model()
 class CompetitionAPIView(RetrieveAPIView):
 
 	serializer_class = CompetitionSerializer
-	lookup_field = 'club_id'
+	lookup_field = 'id'
 
 	# Takes in id of football club and returns accompanying Competition 
 	def get(self, request, id, format=None):
@@ -52,6 +52,10 @@ class CreateWorkoutAPIView(CreateAPIView):
 		total_points += new_points
 		user_profile.total_points = total_points
 		user_profile.save()
+
+class ListFootballClubAPIView(ListAPIView):
+	serializer_class = FootballClubSerializer
+	queryset = FootballClub.objects.all()
 
 
 

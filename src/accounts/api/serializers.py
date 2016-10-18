@@ -11,7 +11,7 @@ from rest_framework.serializers import (
 		)
 
 from accounts.models import UserProfile, Address
-from competitions.models import FootballClub
+from competitions.models import FootballClub, Activity
 
 User = get_user_model()
 
@@ -133,10 +133,24 @@ class AddressSerializer(ModelSerializer):
 	class Meta:
 		model = Address
 
+class ActivitySerializer(ModelSerializer):
+	class Meta:
+		model = Activity
+
+		fields = ['id',]
+
+class FootballClubSerializer(ModelSerializer):
+	class Meta:
+		model = FootballClub
+
+		fields = ['id','club']
+
 class UserProfileSerializer(ModelSerializer):
 
 	user = UserSerializer()
 	address = AddressSerializer()
+	activity = ActivitySerializer(required=False)
+	football_club = FootballClubSerializer()
 
 	class Meta:
 		model = UserProfile
@@ -151,11 +165,14 @@ class UserProfileSerializer(ModelSerializer):
 		address_obj = Address.objects.create(**validated_data['address'])
 
 		# Create User Profile
-		football_club = validated_data['football_club']
+		club_name = validated_data['football_club']["club"]
+		football_club = FootballClub.objects.get(club=club_name)
+		# football_club = validated_data['football_club']
+
 		gender = validated_data['gender']
 		birth_date = validated_data['birth_date']
 		weight = validated_data['weight']
-		photo = validated_data['photo']
+		# photo = validated_data['photo']
 
 		profile_obj = UserProfile(
 					user = user_obj,
@@ -164,7 +181,9 @@ class UserProfileSerializer(ModelSerializer):
 					gender = gender,
 					birth_date = birth_date,
 					weight = weight,
-					photo = photo,
+					# photo = photo,
+					allowed_club_change = True,
+					total_points = 0
 					)
 		profile_obj.save()
 		return validated_data

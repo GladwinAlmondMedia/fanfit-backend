@@ -25,7 +25,7 @@ class Address(models.Model):
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name='user')
 	football_club = models.ForeignKey(FootballClub, null=False, blank=False)
-	GENDERS = (("m", "Male",),("f", "Female"))
+	GENDERS = (("Male", "Male",),("Female", "Female"))
 	gender = models.CharField(max_length=10, choices=GENDERS)
 	birth_date = models.DateField()
 	weight = models.IntegerField()
