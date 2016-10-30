@@ -22,6 +22,14 @@ from accounts.models import UserProfile
 class CompetitionAdmin(admin.ModelAdmin):
 	# form = CompetitionAdminForm
 
+	def get_queryset(self, request):
+		qs = super(CompetitionAdmin, self).get_queryset(request)
+		current_user = request.user
+		if current_user.is_superuser:
+			return qs
+		profie_qs = UserProfile.objects.get(user=current_user)
+		return qs.filter(football_club=profie_qs.football_club)	
+
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if 'activity' in db_field.name and request.user.is_superuser==False:
 			current_user = request.user

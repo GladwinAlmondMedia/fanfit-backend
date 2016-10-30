@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
+    'djoser',
 
     # local apps
     'competitions',
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'fanfit.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,6 +135,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn")
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
@@ -152,3 +162,31 @@ REST_FRAMEWORK = {
     'rest_framework.permissions.AllowAny',
     )
 }
+
+
+DJOSER = {
+    'SITE_NAME': 'Fan Fit Mobile App',
+    'PASSWORD_RESET_CONFIRM_URL': 'fanfitpasswordreset://?uid={uid}&token={token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'PASSWORD_VALIDATORS': [],
+    'SERIALIZERS': {},
+}
+
+
+
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'gladwin@thealmondmedia.com'
+SERVER_EMAIL = 'gladwin@thealmondmedia.com'
+EMAIL_HOST = 'gator4149.hostgator.com'
+EMAIL_PORT = 26
+EMAIL_HOST_USER = 'gladwin@thealmondmedia.com'
+EMAIL_HOST_PASSWORD = 'Dosunmu@2016'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+
+
+
+
+
+

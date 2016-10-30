@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, DecimalField, SerializerMethodField
+
+from accounts.models import UserProfile
 
 from clubadmin.models import Competition 
 
-from competitions.models import Activity, FootballClub, Workout, ActivityCategory
+from competitions.models import Activity, FootballClub, Workout, ActivityCategory, TopCompetitors
 
 User = get_user_model()
 
@@ -35,10 +37,6 @@ class CompetitionSerializer(ModelSerializer):
 	class Meta:
 		model = Competition
 
-class WorkoutActivitySerializer(ModelSerializer):
-	class Meta:
-		model = Activity
-
 class WorkoutSerializer(ModelSerializer):
 
 	activity = ActivitySerializer(required=False)
@@ -47,6 +45,28 @@ class WorkoutSerializer(ModelSerializer):
 		model = Workout
 
 		exclude = ['user']
+
+class TopUserSerializer(ModelSerializer):
+
+	user_points = SerializerMethodField()
+
+	class Meta:
+		model = User
+
+		fields = ['id', 'username', 'user_points']
+
+	def get_user_points(self, obj):
+		user_profile = UserProfile.objects.get(user=obj)
+		return user_profile.total_points
+
+class TopCompetitorSerializer(ModelSerializer):
+
+	first = TopUserSerializer()
+	second = TopUserSerializer()
+	third = TopUserSerializer()
+
+	class Meta:
+		model = TopCompetitors
 
 
 

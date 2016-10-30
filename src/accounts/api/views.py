@@ -14,12 +14,14 @@ from rest_framework.permissions import (
 		IsAuthenticatedOrReadOnly,
 	)
 
+from rest_framework.parsers import FileUploadParser, MultiPartParser
+
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
 from rest_framework.views import APIView
 
 from accounts.models import UserProfile, Address
-from competitions.models import FootballClub
+from competitions.models import FootballClub, Activity
 from .serializers import (
 			# UserCreateSerializer, 
 			# UserLoginSerializer, 
@@ -28,31 +30,11 @@ from .serializers import (
 			UpdateUserProfileSerializer, 
 			UpdateUserSerializer, 
 			AddressSerializer,
-			ForgotPasswordSerializer 
+			ForgotPasswordSerializer,
+			UpdatePhotoSerializer 
 		)
 
 User = get_user_model()
-
-
-# class UserCreateAPIView(CreateAPIView):
-# 	serializer_class = UserCreateSerializer
-# 	queryset = User.objects.all()
-
-
-
-# class UserLoginAPIView(APIView):
-# 	permission_classes = [AllowAny]
-# 	serializer_class = UserLoginSerializer
-
-
-# 	def post(self, request, *args, **kwargs):
-# 		data = request.data
-# 		serializer_class = UserLoginSerializer(data=data)
-# 		serializer = UserLoginSerializer(data=data)
-# 		if serializer.is_valid(raise_exception=True):
-# 			new_data = serializer.data
-# 			return Response(new_data, status=HTTP_200_OK)
-# 		return response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
 class UserProfileAPIView(RetrieveAPIView):
@@ -62,12 +44,22 @@ class UserProfileAPIView(RetrieveAPIView):
 
 	def get(self, request, format=None):
 		queryset = UserProfile.objects.get(user=request.user)
-		serializer = UserProfileSerializer(queryset)
+		serializer = UserProfileSerializer(queryset, context={'request': request})
 		return Response(serializer.data)
 
 class UserProfileCreateAPIView(CreateAPIView):
 	serializer_class = UserProfileSerializer
 	queryset = UserProfile.objects.all()
+
+	def get(self, request, format=None):
+		queryset = UserProfile.objects.all()
+		serializer = UserProfileSerializer(queryset, context={'request': request})
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data, status=HTTP_200_OK)
+		else:
+			print(serializer.errors)
+			return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 class UpdateUserAPIView(RetrieveUpdateAPIView):
 	queryset = User.objects.all()
@@ -77,7 +69,17 @@ class UpdateUserAPIView(RetrieveUpdateAPIView):
 class UpdateUserProfileAPIView(RetrieveUpdateAPIView):
 	queryset = UserProfile.objects.all()
 	serializer_class = UpdateUserProfileSerializer
+
 	lookup_field = 'id'
+
+	def perform_update(self, serializer):
+		activity_id = self.kwargs['activity_id']
+		if activity_id == '0':
+			activity = None
+		else:
+			activity = Activity.objects.get(id=activity_id)
+			queryset = UserProfile.objects.all()
+		instance = serializer.save(activity=activity)
 
 class UpdateUserAddressAPIView(RetrieveUpdateAPIView):
 	queryset = Address.objects.all()
@@ -89,6 +91,23 @@ class ForgotPasswordAPIView(RetrieveUpdateAPIView):
 	serializer_class = ForgotPasswordSerializer
 	lookup_field = 'id'
 
+class UpdatePhotoAPIView(UpdateAPIView):
+
+	# parser_classes = (MultiPartParser,)
+
+	queryset = UserProfile.objects.all()
+	serializer_class = UpdatePhotoSerializer
+	lookup_field = 'id'
+
+	def put(self, request, id, format=None):
+		queryset = UserProfile.objects.get(id=id)
+		serializer = UpdatePhotoSerializer(queryset, data=request.data, context={'request': request})
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data, status=HTTP_200_OK)
+		else:
+			print(serializer.errors)
+			return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
 

@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
@@ -31,6 +33,21 @@ class Activity(models.Model):
 
 	def __str__(self):
 		return self.title
+
+class TopCompetitors(models.Model):
+	activity = models.ForeignKey(Activity)
+	first = models.ForeignKey(User, related_name='first_top_user', blank=True, null=True)
+	second = models.ForeignKey(User, related_name='second_top_user', blank=True, null=True)
+	third = models.ForeignKey(User, related_name='third_top_user', blank=True, null=True)
+
+	def __str__(self):
+		return "%s's top competitors" %self.activity
+
+@receiver(post_save, sender=Activity)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+	if created:
+		TopCompetitors.objects.create(activity=instance)
+
 
 class Workout(models.Model):
 	user = models.ForeignKey(User, related_name='workout_user')
