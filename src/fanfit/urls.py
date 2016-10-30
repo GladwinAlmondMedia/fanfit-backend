@@ -20,7 +20,11 @@ from django.contrib import admin
 
 from rest_framework.authtoken import views
 
+from django.views.generic.base import RedirectView
+
+
 urlpatterns = [
+    url(r'^$', RedirectView.as_view(url='/admin')),
     url(r'^admin/', admin.site.urls),
     url(r'^api/users/', include("accounts.api.urls", namespace='users-api')),
     url(r'^api/competition/', include("clubadmin.api.urls", namespace='competition-api')),
