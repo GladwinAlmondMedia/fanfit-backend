@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '01+q+*dcevnj81zg1zj@(u#u-((3di#1vzts4bs_#fsttxqo*!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_extensions',
     'djoser',
+    'storages',
 
     # local apps
     'competitions',
@@ -195,6 +196,38 @@ EMAIL_PORT = 26
 EMAIL_HOST_USER = 'gladwin@thealmondmedia.com'
 EMAIL_HOST_PASSWORD = 'Dosunmu@2016'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+
+
+AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
+        'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+        'Cache-Control': 'max-age=94608000',
+    }
+
+if DEBUG == False:
+    AWS_STORAGE_BUCKET_NAME = 'fanfit-media'
+    AWS_ACCESS_KEY_ID = 'AKIAJBFV7B35YV7ZOHOA'
+    AWS_SECRET_ACCESS_KEY = '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'
+
+    # Tell django-storages that when coming up with the URL for an item in S3 storage, keep
+    # it simple - just use this domain plus the path. (If this isn't set, things get complicated).
+    # This controls how the `static` template tag from `staticfiles` gets expanded, if you're using it.
+    # We also use it in the next setting.
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+    # This is used by the `static` template tag from `static`, if you're using that. Or if anything else
+    # refers directly to STATIC_URL. So it's safest to always set it.
+    MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+
+
+
+
+
+
+
+
 
 
 
