@@ -1,5 +1,6 @@
 awsebcli==3.8.3
 blessed==1.9.5
+boto==2.43.0
 botocore==1.4.67
 cement==2.8.2
 colorama==0.3.7
@@ -7,6 +8,7 @@ defusedxml==0.4.1
 Django==1.9.10
 django-extensions==1.7.4
 django-filter==0.15.2
+django-storages==1.5.1
 djangorestframework==3.4.7
 djoser==0.5.1
 docker-py==1.7.2
